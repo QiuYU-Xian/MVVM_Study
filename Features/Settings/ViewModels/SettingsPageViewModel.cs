@@ -1,132 +1,84 @@
-﻿using Microsoft.Win32;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using Microsoft.Win32;
 using MyWpfMvvmApp.Helpers;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Input;
 
 namespace MyWpfMvvmApp.Features.Settings.ViewModels
 {
-    public class SettingsPageViewModel : BaseViewModel
+    public partial class SettingsPageViewModel : BaseViewModel
     {
-        #region 屬性
+        #region Observable Properties
 
-        private string _appName = "My WPF MVVM App";
-        public string AppName
-        {
-            get => _appName;
-            set => SetProperty(ref _appName, value);
-        }
+        [ObservableProperty]
+        private string appName = "My WPF MVVM App";
 
         public string Version => "1.0.0";
 
-        private string _selectedLanguage = "繁體中文";
-        public string SelectedLanguage
-        {
-            get => _selectedLanguage;
-            set => SetProperty(ref _selectedLanguage, value);
-        }
+        [ObservableProperty]
+        private string selectedLanguage = "繁體中文";
 
         public ObservableCollection<string> Languages { get; } = new()
         {
             "繁體中文", "簡體中文", "English", "日本語"
         };
 
-        private bool _isLightTheme = true;
-        public bool IsLightTheme
-        {
-            get => _isLightTheme;
-            set
-            {
-                if (SetProperty(ref _isLightTheme, value) && value)
-                {
-                    IsDarkTheme = false;
-                }
-            }
-        }
+        [ObservableProperty]
+        private bool isLightTheme = true;
 
-        private bool _isDarkTheme = false;
-        public bool IsDarkTheme
-        {
-            get => _isDarkTheme;
-            set
-            {
-                if (SetProperty(ref _isDarkTheme, value) && value)
-                {
-                    IsLightTheme = false;
-                }
-            }
-        }
+        [ObservableProperty]
+        private bool isDarkTheme = false;
 
-        private double _fontSize = 14;
-        public double FontSize
-        {
-            get => _fontSize;
-            set => SetProperty(ref _fontSize, value);
-        }
+        [ObservableProperty]
+        private double fontSize = 14;
 
-        private bool _enableAnimations = true;
-        public bool EnableAnimations
-        {
-            get => _enableAnimations;
-            set => SetProperty(ref _enableAnimations, value);
-        }
+        [ObservableProperty]
+        private bool enableAnimations = true;
 
-        private bool _autoSave = true;
-        public bool AutoSave
-        {
-            get => _autoSave;
-            set => SetProperty(ref _autoSave, value);
-        }
+        [ObservableProperty]
+        private bool autoSave = true;
 
-        private int _saveInterval = 5;
-        public int SaveInterval
-        {
-            get => _saveInterval;
-            set => SetProperty(ref _saveInterval, value);
-        }
+        [ObservableProperty]
+        private int saveInterval = 5;
 
         public ObservableCollection<int> SaveIntervals { get; } = new()
         {
             1, 2, 5, 10, 15, 30
         };
 
-        private string _dataPath = @"C:\MyApp\Data";
-        public string DataPath
+        [ObservableProperty]
+        private string dataPath = @"C:\MyApp\Data";
+
+        [ObservableProperty]
+        private string testMessage = "這是一個測試訊息";
+
+        #endregion
+
+        #region Property Change Handlers
+
+        // 當 IsLightTheme 改變時自動調用
+        partial void OnIsLightThemeChanged(bool value)
         {
-            get => _dataPath;
-            set => SetProperty(ref _dataPath, value);
+            if (value)
+            {
+                IsDarkTheme = false;
+            }
         }
 
-        private string _testMessage = "這是一個測試訊息";
-        public string TestMessage
+        // 當 IsDarkTheme 改變時自動調用
+        partial void OnIsDarkThemeChanged(bool value)
         {
-            get => _testMessage;
-            set => SetProperty(ref _testMessage, value);
+            if (value)
+            {
+                IsLightTheme = false;
+            }
         }
 
         #endregion
 
-        #region 命令
+        #region Relay Commands
 
-        public ICommand BrowseDataPathCommand { get; }
-        public ICommand ResetDefaultsCommand { get; }
-        public ICommand SaveSettingsCommand { get; }
-
-        #endregion
-
-        public SettingsPageViewModel()
-        {
-            BrowseDataPathCommand = new RelayCommand(BrowseDataPath);
-            ResetDefaultsCommand = new RelayCommand(ResetDefaults);
-            SaveSettingsCommand = new RelayCommand(SaveSettings);
-        }
-
-        #region 命令實作
-
+        [RelayCommand]
         private void BrowseDataPath()
         {
             var dialog = new OpenFileDialog
@@ -143,6 +95,7 @@ namespace MyWpfMvvmApp.Features.Settings.ViewModels
             }
         }
 
+        [RelayCommand]
         private void ResetDefaults()
         {
             AppName = "My WPF MVVM App";
@@ -156,10 +109,10 @@ namespace MyWpfMvvmApp.Features.Settings.ViewModels
             TestMessage = "這是一個測試訊息";
         }
 
+        [RelayCommand]
         private void SaveSettings()
         {
             // 這裡可以實作儲存設定到檔案或登錄檔的邏輯
-            // 為了示範，我們只是顯示一個簡單的訊息
             System.Windows.MessageBox.Show(
                 $"設定已儲存！\n\n" +
                 $"應用程式名稱: {AppName}\n" +

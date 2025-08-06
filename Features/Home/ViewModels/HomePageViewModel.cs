@@ -1,29 +1,21 @@
-﻿using MyWpfMvvmApp.Helpers;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Input;
+﻿
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using MyWpfMvvmApp.Helpers;
 
 namespace MyWpfMvvmApp.Features.Home.ViewModels
 {
-    public class HomePageViewModel : BaseViewModel
+    public partial class HomePageViewModel : BaseViewModel
     {
-        private string _message = "Hello MVVM World!";
+        // 使用 [ObservableProperty] 自動生成屬性
+        [ObservableProperty]
+        private string message = "Hello MVVM World!";
 
-        public string Message
+        // 使用 [RelayCommand] 自動生成命令
+        [RelayCommand]
+        private void UpdateTime()
         {
-            get => _message;
-            set => SetProperty(ref _message, value);
-        }
-
-        public ICommand UpdateTimeCommand { get; }
-
-        public HomePageViewModel()
-        {
-            UpdateTimeCommand = new RelayCommand(() =>
-                Message = $"當前時間: {DateTime.Now:yyyy-MM-dd HH:mm:ss}");
+            Message = $"當前時間: {DateTime.Now:yyyy-MM-dd HH:mm:ss}";
         }
     }
 }

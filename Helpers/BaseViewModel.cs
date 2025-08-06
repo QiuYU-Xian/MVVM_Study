@@ -1,29 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+
 namespace MyWpfMvvmApp.Helpers
 {
-    public abstract class BaseViewModel : INotifyPropertyChanged
+    // 現在只需要繼承 ObservableObject 即可
+    public abstract class BaseViewModel : ObservableObject
     {
-        public event PropertyChangedEventHandler? PropertyChanged;
-
-        protected void OnPropertyChanged([CallerMemberName] string? propertyName = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-
-        protected bool SetProperty<T>(ref T field, T value, [CallerMemberName] string? propertyName = null)
-        {
-            if (EqualityComparer<T>.Default.Equals(field, value))
-                return false;
-
-            field = value;
-            OnPropertyChanged(propertyName);
-            return true;
-        }
+        // CommunityToolkit.Mvvm 已經提供了所有必要的功能
+        // 不需要手動實作 INotifyPropertyChanged
+        // SetProperty 方法也已經包含在 ObservableObject 中
     }
 }
