@@ -2,6 +2,7 @@
 using MyWpfMvvmApp.Features.Home.Views;
 using MyWpfMvvmApp.Features.Settings.Views;
 using MyWpfMvvmApp.Helpers;
+using MyWpfMvvmApp.Services;
 using MyWpfMvvmApp.Views;
 using System.Diagnostics;
 using System.Windows;
@@ -10,33 +11,30 @@ namespace MyWpfMvvmApp.ViewModels
 {
     public partial class MainViewModel : BaseViewModel
     {
-        public MainViewModel()
+        private readonly INavigationService _navigationService;
+
+        public MainViewModel(INavigationService navigationService)
         {
+            _navigationService = navigationService;
+
             // 預設顯示首頁
             ShowHomePage();
         }
 
-
         [RelayCommand]
         private void ShowHomePage()
         {
-            Debug.WriteLine("Navigating to Home Page");
-            Application.Current.Dispatcher.Invoke(() =>
-            {
-                if (MainWindow.Instance != null)
-                    MainWindow.Instance.NavigateToPage(new HomePage());
-            });
+            // 使用依賴注入取得頁面實例
+            var homePage = ServiceProvider.GetService<HomePage>();
+            _navigationService.NavigateToPage(homePage);
         }
 
         [RelayCommand]
         private void ShowSettingsPage()
         {
-            Debug.WriteLine("Navigating to Settings Page");
-            Application.Current.Dispatcher.Invoke(() =>
-            {
-                if (MainWindow.Instance != null)
-                    MainWindow.Instance.NavigateToPage(new SettingsPage());
-            });
+            // 使用依賴注入取得頁面實例
+            var settingsPage = ServiceProvider.GetService<SettingsPage>();
+            _navigationService.NavigateToPage(settingsPage);
         }
     }
 }

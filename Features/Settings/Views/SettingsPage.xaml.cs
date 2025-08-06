@@ -1,5 +1,6 @@
 ﻿using System.Windows.Controls;
 using MyWpfMvvmApp.Features.Settings.ViewModels;
+using MyWpfMvvmApp.Services;
 
 namespace MyWpfMvvmApp.Features.Settings.Views
 {
@@ -8,8 +9,8 @@ namespace MyWpfMvvmApp.Features.Settings.Views
         public SettingsPage()
         {
             InitializeComponent();
-            // 修正：設定 DataContext
-            DataContext = new SettingsPageViewModel();
+            // 從 DI 容器取得 ViewModel
+            DataContext = ServiceProvider.GetService<SettingsPageViewModel>();
         }
     }
 }
