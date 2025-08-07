@@ -1,10 +1,12 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using MyWpfMvvmApp.Features.Flasher.ViewModels;
+using MyWpfMvvmApp.Features.Flasher.Views;
 using MyWpfMvvmApp.Features.Home.ViewModels;
 using MyWpfMvvmApp.Features.Home.Views;
 using MyWpfMvvmApp.Features.Settings.ViewModels;
 using MyWpfMvvmApp.Features.Settings.Views;
 using MyWpfMvvmApp.ViewModels;
-
 
 namespace MyWpfMvvmApp.Services
 {
@@ -19,18 +21,29 @@ namespace MyWpfMvvmApp.Services
         {
             var services = new ServiceCollection();
 
+            // 註冊日誌服務
+            services.AddLogging(builder =>
+            {
+                //builder.AddConsole();
+                //builder.AddDebug();
+                builder.SetMinimumLevel(LogLevel.Information);
+            });
+
             // 註冊服務
             services.AddSingleton<INavigationService, NavigationService>();
+            services.AddSingleton<IWebSocketService, WebSocketService>();
             services.AddSingleton<DataService>();
 
             // 註冊 ViewModels
             services.AddTransient<MainViewModel>();
             services.AddTransient<HomePageViewModel>();
             services.AddTransient<SettingsPageViewModel>();
+            services.AddTransient<FlasherPageViewModel>();
 
             // 註冊 Views (Pages)
             services.AddTransient<HomePage>();
             services.AddTransient<SettingsPage>();
+            services.AddTransient<FlasherPage>();
 
             _serviceProvider = services.BuildServiceProvider();
         }

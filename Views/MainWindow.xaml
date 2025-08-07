@@ -21,10 +21,23 @@
 
             <!-- 導航選單 -->
             <StackPanel Grid.Column="0" Background="#f5f5f5" Margin="5">
-                <Button Content="首頁" 
+                <TextBlock Text="燒入器工具" FontWeight="Bold" FontSize="16" 
+                           Margin="10" HorizontalAlignment="Center"/>
+
+                <Button Content="🔧 燒入器" 
+                        Command="{Binding ShowFlasherPageCommand}"
+                        Margin="5" Height="45" FontSize="14"
+                        Background="LightBlue"/>
+
+                <Separator Margin="5,10"/>
+
+                <TextBlock Text="系統功能" FontWeight="Bold" 
+                           Margin="10,5" HorizontalAlignment="Center"/>
+
+                <Button Content="📋 首頁" 
                         Command="{Binding ShowHomePageCommand}"
                         Margin="5" Height="40"/>
-                <Button Content="設定" 
+                <Button Content="⚙️ 設定" 
                         Command="{Binding ShowSettingsPageCommand}"
                         Margin="5" Height="40"/>
             </StackPanel>
@@ -37,7 +50,9 @@
 
         <!-- 狀態列 -->
         <StatusBar Grid.Row="1">
-            <StatusBarItem Content="就緒" />
+            <StatusBarItem>
+                <TextBlock Text="燒入器應用程式 v1.0 | 準備就緒"/>
+            </StatusBarItem>
         </StatusBar>
     </Grid>
 </Window>

@@ -1,4 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.Input;
+using MyWpfMvvmApp.Features.Flasher.Views;
 using MyWpfMvvmApp.Features.Home.Views;
 using MyWpfMvvmApp.Features.Settings.Views;
 using MyWpfMvvmApp.Helpers;
@@ -17,8 +18,8 @@ namespace MyWpfMvvmApp.ViewModels
         {
             _navigationService = navigationService;
 
-            // 預設顯示首頁
-            ShowHomePage();
+            // 預設顯示燒入器頁面（作為主要功能）
+            ShowFlasherPage();
         }
 
         [RelayCommand]
@@ -35,6 +36,13 @@ namespace MyWpfMvvmApp.ViewModels
             // 使用依賴注入取得頁面實例
             var settingsPage = ServiceProvider.GetService<SettingsPage>();
             _navigationService.NavigateToPage(settingsPage);
+        }
+
+        [RelayCommand]
+        private void ShowFlasherPage()
+        {
+            var flasherPage = ServiceProvider.GetService<FlasherPage>();
+            _navigationService.NavigateToPage(flasherPage);
         }
     }
 }
