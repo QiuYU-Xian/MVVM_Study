@@ -9,136 +9,317 @@
       Title="FlasherPage">
 
     <Grid Margin="20">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="200"/>
-        </Grid.RowDefinitions>
+        <TabControl>
+            <!-- Online 模式 Tab -->
+            <TabItem Header="🌐 線上模式 (Online)" FontSize="14">
+                <Grid Margin="10">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="200"/>
+                    </Grid.RowDefinitions>
 
-        <!-- 連接控制區 -->
-        <GroupBox Grid.Row="0" Header="連接設定" Margin="0,0,0,20">
-            <Grid Margin="15">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                </Grid.RowDefinitions>
+                    <!-- 連接控制區 -->
+                    <GroupBox Grid.Row="0" Header="WebSocket 連接" Margin="0,0,0,20">
+                        <Grid Margin="15">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
 
-                <!-- WebSocket 連接 -->
-                <Grid Grid.Row="0" Margin="0,0,0,15">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="120"/>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition Width="Auto"/>
-                    </Grid.ColumnDefinitions>
+                            <!-- WebSocket 連接 -->
+                            <Grid Grid.Row="0" Margin="0,0,0,15">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="120"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
 
-                    <TextBlock Grid.Column="0" Text="WebSocket URL:" VerticalAlignment="Center"/>
-                    <TextBox Grid.Column="1" Text="{Binding WebSocketUrl}" Margin="0,0,10,0"/>
-                    <Button Grid.Column="2" Content="連接" Command="{Binding ConnectWebSocketCommand}"
-                            
-                            Margin="0,0,5,0"/>
-                    <Button Grid.Column="3" Content="斷線" Command="{Binding DisconnectWebSocketCommand}"
-                            IsEnabled="{Binding IsConnected}"/>
-                </Grid>
+                                <TextBlock Grid.Column="0" Text="伺服器地址:" VerticalAlignment="Center"/>
+                                <TextBox Grid.Column="1" Text="{Binding WebSocketUrl}" Margin="0,0,10,0"/>
+                                <Button Grid.Column="2" Content="連接" Command="{Binding ConnectWebSocketCommand}"
+                                        Margin="0,0,5,0">
+                                    <Button.Style>
+                                        <Style TargetType="Button">
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding IsConnected}" Value="True">
+                                                    <Setter Property="IsEnabled" Value="False"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Button.Style>
+                                </Button>
+                                <Button Grid.Column="3" Content="斷線" Command="{Binding DisconnectWebSocketCommand}"
+                                        
+                                        IsEnabled="{Binding IsConnected}"/>
+                            </Grid>
 
-                <!-- 狀態顯示 -->
-                <Grid Grid.Row="1">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="120"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
+                            <!-- 狀態顯示 -->
+                            <Grid Grid.Row="1">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="120"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
 
-                    <TextBlock Grid.Column="0" Text="連接狀態:" VerticalAlignment="Center"/>
-                    <TextBlock Grid.Column="1" Text="{Binding ConnectionStatus}" VerticalAlignment="Center"/>
-                </Grid>
-            </Grid>
-        </GroupBox>
+                                <TextBlock Grid.Column="0" Text="連接狀態:" VerticalAlignment="Center"/>
+                                <TextBlock Grid.Column="1" Text="{Binding ConnectionStatus}" VerticalAlignment="Center">
+                                    <TextBlock.Style>
+                                        <Style TargetType="TextBlock">
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding IsConnected}" Value="True">
+                                                    <Setter Property="Foreground" Value="Green"/>
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding IsConnected}" Value="False">
+                                                    <Setter Property="Foreground" Value="Red"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBlock.Style>
+                                </TextBlock>
+                            </Grid>
+                        </Grid>
+                    </GroupBox>
 
-        <!-- 主要操作區 -->
-        <Grid Grid.Row="1">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
-            </Grid.ColumnDefinitions>
+                    <!-- 主要操作區 -->
+                    <Grid Grid.Row="1">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
 
-            <!-- 左側：設備和韌體選擇 -->
-            <GroupBox Grid.Column="0" Header="燒入設定" Margin="0,0,10,0">
-                <StackPanel Margin="15">
-                    <!-- 設備選擇 -->
-                    <Grid Margin="0,0,0,15">
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                        </Grid.RowDefinitions>
+                        <!-- 左側：設備和韌體選擇 -->
+                        <GroupBox Grid.Column="0" Header="遠端燒入設定" Margin="0,0,10,0">
+                            <StackPanel Margin="15">
+                                <!-- 設備選擇 -->
+                                <Grid Margin="0,0,0,15">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                    </Grid.RowDefinitions>
 
-                        <TextBlock Grid.Row="0" Text="選擇設備:" Margin="0,0,0,5"/>
-                        <ComboBox Grid.Row="1" ItemsSource="{Binding AvailableDevices}"
-                                  SelectedItem="{Binding SelectedDevice}"
-                                  DisplayMemberPath="Name" Margin="0,0,0,5"/>
-                        <Button Grid.Row="2" Content="刷新設備" Command="{Binding RefreshDeviceListCommand}"
-                                HorizontalAlignment="Left"/>
+                                    <TextBlock Grid.Row="0" Text="遠端設備:" Margin="0,0,0,5"/>
+                                    <ComboBox Grid.Row="1" ItemsSource="{Binding AvailableDevices}"
+                                              SelectedItem="{Binding SelectedDevice}"
+                                              DisplayMemberPath="Name" Margin="0,0,0,5"/>
+                                    <Button Grid.Row="2" Content="刷新設備列表" Command="{Binding RefreshDeviceListCommand}"
+                                            HorizontalAlignment="Left"/>
+                                </Grid>
+
+                                <!-- 韌體選擇 -->
+                                <Grid Margin="0,0,0,15">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                    </Grid.RowDefinitions>
+
+                                    <TextBlock Grid.Row="0" Text="韌體檔案:" Margin="0,0,0,5"/>
+                                    <TextBox Grid.Row="1" Text="{Binding SelectedFirmwarePath}" IsReadOnly="True" Margin="0,0,0,5"/>
+                                    <Button Grid.Row="2" Content="選擇韌體..." Command="{Binding SelectFirmwareCommand}"
+                                            HorizontalAlignment="Left"/>
+                                </Grid>
+
+                                <!-- 燒入控制 -->
+                                <StackPanel Orientation="Horizontal" Margin="0,20,0,0">
+                                    <Button Content="開始遠端燒入" Command="{Binding StartFlashCommand}"
+                                             Margin="0,0,10,0"/>
+                                    <Button Content="停止燒入" Command="{Binding StopFlashCommand}"
+                                            />
+                                </StackPanel>
+                            </StackPanel>
+                        </GroupBox>
+
+                        <!-- 右側：進度顯示 -->
+                        <GroupBox Grid.Column="1" Header="燒入進度" Margin="10,0,0,0">
+                            <StackPanel Margin="15">
+                                <!-- 進度條 -->
+                                <TextBlock Text="燒入進度:" Margin="0,0,0,5"/>
+                                <ProgressBar Value="{Binding FlashProgress}" Maximum="100" Height="25" Margin="0,0,0,5"/>
+                                <TextBlock Text="{Binding FlashProgress, StringFormat={}{0}%}" HorizontalAlignment="Center" Margin="0,0,0,15"/>
+
+                                <!-- 狀態顯示 -->
+                                <TextBlock Text="狀態:" Margin="0,0,0,5"/>
+                                <TextBlock Text="{Binding FlashStatus}" FontWeight="Bold" Margin="0,0,0,15"/>
+
+                                <!-- 當前日誌 -->
+                                <TextBlock Text="最新訊息:" Margin="0,0,0,5"/>
+                                <TextBlock Text="{Binding CurrentLog}" TextWrapping="Wrap" 
+                                           Background="LightGray" Padding="5" MinHeight="50"/>
+                            </StackPanel>
+                        </GroupBox>
                     </Grid>
 
-                    <!-- 韌體選擇 -->
-                    <Grid Margin="0,0,0,15">
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                        </Grid.RowDefinitions>
+                    <!-- 日誌區域 -->
+                    <GroupBox Grid.Row="2" Header="線上模式日誌" Margin="0,20,0,0">
+                        <Grid Margin="10">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
 
-                        <TextBlock Grid.Row="0" Text="韌體檔案:" Margin="0,0,0,5"/>
-                        <TextBox Grid.Row="1" Text="{Binding SelectedFirmwarePath}" IsReadOnly="True" Margin="0,0,0,5"/>
-                        <Button Grid.Row="2" Content="選擇韌體..." Command="{Binding SelectFirmwareCommand}"
-                                HorizontalAlignment="Left"/>
+                            <ListBox Grid.Row="0" ItemsSource="{Binding LogMessages}" 
+                                     ScrollViewer.HorizontalScrollBarVisibility="Auto"
+                                     ScrollViewer.VerticalScrollBarVisibility="Auto"/>
+
+                            <Button Grid.Row="1" Content="清除日誌" Command="{Binding ClearLogsCommand}"
+                                    HorizontalAlignment="Right" Margin="0,5,0,0"/>
+                        </Grid>
+                    </GroupBox>
+                </Grid>
+            </TabItem>
+
+            <!-- Offline 模式 Tab -->
+            <TabItem Header="💻 離線模式 (Offline)" FontSize="14">
+                <Grid Margin="10">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="200"/>
+                    </Grid.RowDefinitions>
+
+                    <!-- 離線模式說明 -->
+                    <GroupBox Grid.Row="0" Header="離線燒入設定" Margin="0,0,0,20">
+                        <StackPanel Margin="15">
+                            <TextBlock Text="離線模式可直接使用本機連接的燒入器設備" 
+                                       FontWeight="Bold" Margin="0,0,0,10"/>
+                            <TextBlock Text="無需連接到遠端伺服器，適合單機作業環境" 
+                                       Foreground="Gray" Margin="0,0,0,15"/>
+                        </StackPanel>
+                    </GroupBox>
+
+                    <!-- 主要操作區 -->
+                    <Grid Grid.Row="1">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <!-- 左側：本機設備和韌體 -->
+                        <GroupBox Grid.Column="0" Header="本機燒入設定" Margin="0,0,10,0">
+                            <StackPanel Margin="15">
+                                <!-- 本機 COM 埠選擇 -->
+                                <Grid Margin="0,0,0,15">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                    </Grid.RowDefinitions>
+
+                                    <TextBlock Grid.Row="0" Text="COM 埠:" Margin="0,0,0,5"/>
+                                    <ComboBox Grid.Row="1" ItemsSource="{Binding OfflineComPorts}"
+                                              SelectedItem="{Binding SelectedOfflineComPort}"
+                                              Margin="0,0,0,5"/>
+                                    <Button Grid.Row="2" Content="掃描 COM 埠" Command="{Binding ScanComPortsCommand}"
+                                            HorizontalAlignment="Left"/>
+                                </Grid>
+
+                                <!-- 波特率設定 -->
+                                <Grid Margin="0,0,0,15">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <StackPanel Grid.Column="0" Margin="0,0,5,0">
+                                        <TextBlock Text="波特率:" Margin="0,0,0,5"/>
+                                        <ComboBox ItemsSource="{Binding BaudRates}"
+                                                  SelectedItem="{Binding SelectedBaudRate}"/>
+                                    </StackPanel>
+
+                                    <StackPanel Grid.Column="1" Margin="5,0,0,0">
+                                        <TextBlock Text="設備類型:" Margin="0,0,0,5"/>
+                                        <ComboBox ItemsSource="{Binding OfflineDeviceTypes}"
+                                                  SelectedItem="{Binding SelectedOfflineDeviceType}"/>
+                                    </StackPanel>
+                                </Grid>
+
+                                <!-- 韌體選擇 -->
+                                <Grid Margin="0,0,0,15">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                    </Grid.RowDefinitions>
+
+                                    <TextBlock Grid.Row="0" Text="韌體檔案:" Margin="0,0,0,5"/>
+                                    <TextBox Grid.Row="1" Text="{Binding OfflineFirmwarePath}" IsReadOnly="True" Margin="0,0,0,5"/>
+                                    <Button Grid.Row="2" Content="選擇韌體..." Command="{Binding SelectOfflineFirmwareCommand}"
+                                            HorizontalAlignment="Left"/>
+                                </Grid>
+
+                                <!-- 離線燒入控制 -->
+                                <StackPanel Orientation="Horizontal" Margin="0,20,0,0">
+                                    <Button Content="開始本機燒入" Command="{Binding StartOfflineFlashCommand}"
+                                             Margin="0,0,10,0"/>
+                                    <Button Content="停止燒入" Command="{Binding StopOfflineFlashCommand}"
+                                            />
+                                </StackPanel>
+                            </StackPanel>
+                        </GroupBox>
+
+                        <!-- 右側：離線燒入狀態 -->
+                        <GroupBox Grid.Column="1" Header="本機燒入狀態" Margin="10,0,0,0">
+                            <StackPanel Margin="15">
+                                <!-- 連接狀態 -->
+                                <Grid Margin="0,0,0,15">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="80"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Grid.Column="0" Text="連接狀態:" VerticalAlignment="Center"/>
+                                    <TextBlock Grid.Column="1" Text="{Binding OfflineConnectionStatus}" VerticalAlignment="Center">
+                                        <TextBlock.Style>
+                                            <Style TargetType="TextBlock">
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding IsOfflineConnected}" Value="True">
+                                                        <Setter Property="Foreground" Value="Green"/>
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding IsOfflineConnected}" Value="False">
+                                                        <Setter Property="Foreground" Value="Red"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </TextBlock.Style>
+                                    </TextBlock>
+                                </Grid>
+
+                                <!-- 進度條 -->
+                                <TextBlock Text="燒入進度:" Margin="0,0,0,5"/>
+                                <ProgressBar Value="{Binding OfflineFlashProgress}" Maximum="100" Height="25" Margin="0,0,0,5"/>
+                                <TextBlock Text="{Binding OfflineFlashProgress, StringFormat={}{0}%}" HorizontalAlignment="Center" Margin="0,0,0,15"/>
+
+                                <!-- 狀態顯示 -->
+                                <TextBlock Text="狀態:" Margin="0,0,0,5"/>
+                                <TextBlock Text="{Binding OfflineFlashStatus}" FontWeight="Bold" Margin="0,0,0,15"/>
+
+                                <!-- 當前操作 -->
+                                <TextBlock Text="當前操作:" Margin="0,0,0,5"/>
+                                <TextBlock Text="{Binding OfflineCurrentOperation}" TextWrapping="Wrap" 
+                                           Background="LightBlue" Padding="5" MinHeight="50"/>
+                            </StackPanel>
+                        </GroupBox>
                     </Grid>
 
-                    <!-- 燒入控制 -->
-                    <StackPanel Orientation="Horizontal" Margin="0,20,0,0">
-                        <Button Content="開始燒入" Command="{Binding StartFlashCommand}"
-                                Background="LightGreen" Margin="0,0,10,0"/>
-                        <Button Content="停止燒入" Command="{Binding StopFlashCommand}"
-                                Background="LightCoral"/>
-                    </StackPanel>
-                </StackPanel>
-            </GroupBox>
+                    <!-- 離線日誌區域 -->
+                    <GroupBox Grid.Row="2" Header="離線模式日誌" Margin="0,20,0,0">
+                        <Grid Margin="10">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
 
-            <!-- 右側：進度顯示 -->
-            <GroupBox Grid.Column="1" Header="燒入進度" Margin="10,0,0,0">
-                <StackPanel Margin="15">
-                    <!-- 進度條 -->
-                    <TextBlock Text="燒入進度:" Margin="0,0,0,5"/>
-                    <ProgressBar Value="{Binding FlashProgress}" Maximum="100" Height="25" Margin="0,0,0,5"/>
-                    <TextBlock Text="{Binding FlashProgress, StringFormat={}{0}%}" HorizontalAlignment="Center" Margin="0,0,0,15"/>
+                            <ListBox Grid.Row="0" ItemsSource="{Binding OfflineLogMessages}" 
+                                     ScrollViewer.HorizontalScrollBarVisibility="Auto"
+                                     ScrollViewer.VerticalScrollBarVisibility="Auto"/>
 
-                    <!-- 狀態顯示 -->
-                    <TextBlock Text="狀態:" Margin="0,0,0,5"/>
-                    <TextBlock Text="{Binding FlashStatus}" FontWeight="Bold" Margin="0,0,0,15"/>
-
-                    <!-- 當前日誌 -->
-                    <TextBlock Text="最新訊息:" Margin="0,0,0,5"/>
-                    <TextBlock Text="{Binding CurrentLog}" TextWrapping="Wrap" 
-                               Background="LightGray" Padding="5" MinHeight="50"/>
-                </StackPanel>
-            </GroupBox>
-        </Grid>
-
-        <!-- 日誌區域 -->
-        <GroupBox Grid.Row="2" Header="操作日誌" Margin="0,20,0,0">
-            <Grid Margin="10">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="*"/>
-                    <RowDefinition Height="Auto"/>
-                </Grid.RowDefinitions>
-
-                <ListBox Grid.Row="0" ItemsSource="{Binding LogMessages}" 
-                         ScrollViewer.HorizontalScrollBarVisibility="Auto"
-                         ScrollViewer.VerticalScrollBarVisibility="Auto"/>
-
-                <Button Grid.Row="1" Content="清除日誌" Command="{Binding ClearLogsCommand}"
-                        HorizontalAlignment="Right" Margin="0,5,0,0"/>
-            </Grid>
-        </GroupBox>
+                            <Button Grid.Row="1" Content="清除離線日誌" Command="{Binding ClearOfflineLogsCommand}"
+                                    HorizontalAlignment="Right" Margin="0,5,0,0"/>
+                        </Grid>
+                    </GroupBox>
+                </Grid>
+            </TabItem>
+        </TabControl>
     </Grid>
 </Page>
